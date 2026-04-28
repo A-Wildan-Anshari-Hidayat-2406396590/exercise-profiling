@@ -4,25 +4,16 @@ This repository documents the profiling and performance optimization of a Spring
 
 ## 1. Performance Testing (JMeter)
 
-The JMeter performance testing was conducted to simulate concurrent user loads on the application's endpoints and measure the raw throughput and latency before and after our codebase optimizations.
+The JMeter performance testing was conducted to simulate concurrent user loads on the application's endpoints.
 
-### Before Optimization
-*(Please ensure your pre-optimization screenshots are named correctly in the `img/` folder and match the paths below)*
-
-**`/all-student-name` Endpoint Execution:**
-![JMeter Before - all-student-name](img/jmeter_before_all_student_name.png)
-
-**`/highest-gpa` Endpoint Execution:**
-![JMeter Before - highest-gpa](img/jmeter_before_highest_gpa.png)
-
-### After Optimization
-*(Please ensure your post-optimization screenshots are named correctly in the `img/` folder and match the paths below)*
+**`/all-student` Endpoint Execution:**
+![JMeter - all-student](img/jmeter-pic/all_students.png)
 
 **`/all-student-name` Endpoint Execution:**
-![JMeter After - all-student-name](img/jmeter_after_all_student_name.png)
+![JMeter - all-student-name](img/jmeter-pic/all_student_names.png)
 
 **`/highest-gpa` Endpoint Execution:**
-![JMeter After - highest-gpa](img/jmeter_after_highest_gpa.png)
+![JMeter - highest-gpa](img/jmeter-pic/highest_gpa.png)
 
 ### Conclusion
 By optimizing the application's database interactions and memory footprint, we successfully observed a massive drop in execution time during profiling. When load testing with JMeter, this lower execution time translates directly into higher throughput (requests per second) and significantly lower latency for the end user. The application can now handle concurrent loads much more smoothly without causing database connection starvation or JVM OutOfMemory errors.
@@ -38,15 +29,33 @@ Using the IntelliJ Profiler, we identified three major bottlenecks in the `Stude
 - **Optimization:** We replaced the nested loops with a single call to `studentCourseRepository.findAll()`, allowing Spring Data JPA to fetch the records in a single, highly optimized batch.
 - **Improvement:** Execution time dropped from **468ms** to **264ms** (a 43% improvement).
 
+**Before Optimization:**
+![Profiler Before - all-student](img/profiler/all-student%20before.png)
+
+**After Optimization:**
+![Profiler After - all-student](img/profiler/all-student%20after.png)
+
 ### `findStudentWithHighestGpa()` (`/highest-gpa`)
 - **Bottleneck:** The method loaded all student records into memory and iterated through them to find the highest GPA. This is highly inefficient for large datasets.
 - **Optimization:** We created a custom query `findFirstByOrderByGpaDesc()` in the `StudentRepository` to delegate the sorting and limiting directly to the database.
 - **Improvement:** Execution time dropped from **132ms** to **84ms** (a 36% improvement).
 
+**Before Optimization:**
+![Profiler Before - highest-gpa](img/profiler/highest-gpa%20before.png)
+
+**After Optimization:**
+![Profiler After - highest-gpa](img/profiler/highest-gpa%20after.png)
+
 ### `joinStudentNames()` (`/all-student-name`)
 - **Bottleneck:** The method fetched entire `Student` entities and used string concatenation (`+=`) in a loop. Since strings are immutable, this caused massive memory allocation overhead.
 - **Optimization:** We added a custom `@Query("SELECT s.name FROM Student s")` to fetch only the raw name strings from the database, completely avoiding entity initialization. We also used `String.join()` for efficient string building.
 - **Improvement:** Execution time dropped from **132ms** to **72ms** (a 45% improvement).
+
+**Before Optimization:**
+![Profiler Before - all-student-name](img/profiler/all-student-name%20before.png)
+
+**After Optimization:**
+![Profiler After - all-student-name](img/profiler/all-student-name%20after.png)
 
 ---
 
