@@ -33,10 +33,8 @@ public class StudentService {
     }
 
     public String joinStudentNames() {
-        List<Student> students = studentRepository.findAll();
-        return students.stream()
-                .map(Student::getName)
-                .collect(Collectors.joining(", "));
+        List<String> studentNames = studentRepository.findAllStudentNames();
+        return String.join(", ", studentNames);
     }
 }
 
