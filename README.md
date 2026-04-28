@@ -6,14 +6,26 @@ This repository documents the profiling and performance optimization of a Spring
 
 The JMeter performance testing was conducted to simulate concurrent user loads on the application's endpoints.
 
-**`/all-student` Endpoint Execution:**
-![JMeter - all-student](img/jmeter-pic/all_students.png)
+### `/all-student` Endpoint
+**GUI Execution:**
+![JMeter GUI - all-student](img/jmeter-pic/all-student.png)
 
-**`/all-student-name` Endpoint Execution:**
-![JMeter - all-student-name](img/jmeter-pic/all_student_names.png)
+**CLI Execution:**
+![JMeter CLI - all-student](img/jmeter-pic/all_students.png)
 
-**`/highest-gpa` Endpoint Execution:**
-![JMeter - highest-gpa](img/jmeter-pic/highest_gpa.png)
+### `/all-student-name` Endpoint
+**GUI Execution:**
+![JMeter GUI - all-student-name](img/jmeter-pic/all-student-name.png)
+
+**CLI Execution:**
+![JMeter CLI - all-student-name](img/jmeter-pic/all_student_names.png)
+
+### `/highest-gpa` Endpoint
+**GUI Execution:**
+![JMeter GUI - highest-gpa](img/jmeter-pic/highest-gpa.png)
+
+**CLI Execution:**
+![JMeter CLI - highest-gpa](img/jmeter-pic/highest_gpa.png)
 
 ### Conclusion
 By optimizing the application's database interactions and memory footprint, we successfully observed a massive drop in execution time during profiling. When load testing with JMeter, this lower execution time translates directly into higher throughput (requests per second) and significantly lower latency for the end user. The application can now handle concurrent loads much more smoothly without causing database connection starvation or JVM OutOfMemory errors.
